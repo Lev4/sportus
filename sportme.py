@@ -1,9 +1,10 @@
-import requests
-from datetime import datetime, timedelta
-from tqdm.auto import tqdm
-import time
-import urllib3
+import logging
 import random
+import time
+from datetime import datetime, timedelta
+import requests
+import urllib3
+from tqdm.auto import tqdm
 
 urllib3.disable_warnings()
 
@@ -135,13 +136,14 @@ class SportmeBooker:
             'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
             'clientwidth': '1615',
             'content-length': '0',
-            'ip': '185.18.4.94',
+            # 'ip': '185.18.4.94',
             'origin': 'https://sportme.club',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
             'timezone': '1',
-            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36',
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/84.0.4147.105 Safari/537.36',
             'x-requested-with': 'XMLHttpRequest',
         }
 
@@ -170,35 +172,41 @@ class SportmeBooker:
             'accept-language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
             'clientwidth': '1615',
             'content-length': '0',
-            'ip': '185.18.4.94',
+            # 'ip': '185.18.4.94',
             'origin': 'https://sportme.club',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
             'timezone': '1',
-            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36',
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/84.0.4147.105 Safari/537.36',
             'x-requested-with': 'XMLHttpRequest',
         }
         checker = self.check_event_booking(event_id)
+        result = None
         if checker.get('state') == 'OK' or checker.get('message') == 'FINISH_BOOKING':
             try:
                 res = requests.post(url, headers=myheaders, verify=False)
                 result = res.json()
             except Exception as e:
                 print(e)
+                logging.info(e)
 
             if result['state'] == 'OK':
-                print(f'Слот {event_id} забронирован')
+                # print(f'Слот {event_id} забронирован')
+                logging.info(f'Слот {event_id} забронирован')
                 event_time = self.get_event_time(event_id)
-                print(event_time)
+                # print(event_time)
+                logging.info(f'Время {event_time}')
                 self.booked_events.append(event_id)
 
                 return True
             else:
-                print(f'Не получается забронировать {event_id}')
+                logging.info(f'Не получается забронировать {event_id}')
                 return None
         else:
-            print('checker не пускает ')
+            # print('checker не пускает ')
+            logging.info('checker не пускает ')
             return None
 
     def unbook_event(self, event_id):
@@ -223,18 +231,21 @@ class SportmeBooker:
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
             'timezone': '1',
-            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36',
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/84.0.4147.105 Safari/537.36',
             'x-requested-with': 'XMLHttpRequest',
         }
         try:
             res = requests.post(url, headers=myheaders, verify=False)
             result = res.json()
             if result['state'] == 'OK':
-                print(f'Бронирование {event_id} отменено')
+                # print(f'Бронирование {event_id} отменено')
+                logging.info(f'Бронирование {event_id} отменено')
                 self.booked_events.remove(event_id)
                 return True
             else:
-                print(f'Не удалось отменить бронь {event_id}')
+                # print(f'Не удалось отменить бронь {event_id}')
+                logging.info(f'Не удалось отменить бронь {event_id}')
                 return False
         except Exception as e:
             print(e)
