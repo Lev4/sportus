@@ -6,8 +6,10 @@ import requests
 import urllib3
 from tqdm.auto import tqdm
 
-urllib3.disable_warnings()
 
+urllib3.disable_warnings()
+requests.packages.urllib3.disable_warnings()
+logging.basicConfig(level = logging.INFO)
 
 class SportmeBooker:
     # TODO: научиться передавать забронированные, те что не нужно забронировать
@@ -153,7 +155,7 @@ class SportmeBooker:
             book_status = res.json()
             return book_status
         except Exception as e:
-            print(e)
+            logging.info(e)
             return False
 
     def book_event(self, event_id):
@@ -189,7 +191,6 @@ class SportmeBooker:
                 res = requests.post(url, headers=myheaders, verify=False)
                 result = res.json()
             except Exception as e:
-                print(e)
                 logging.info(e)
 
             if result['state'] == 'OK':
@@ -248,7 +249,7 @@ class SportmeBooker:
                 logging.info(f'Не удалось отменить бронь {event_id}')
                 return False
         except Exception as e:
-            print(e)
+            logging.info(e)
             return False
 
     def get_active_bookings(self):
@@ -285,7 +286,7 @@ class SportmeBooker:
             self.booked_events = active_bookings
             return True
         except Exception as e:
-            print(e)
+            logging.info(e)
             return False
 
     def get_event_time(self, event_id):
@@ -306,12 +307,12 @@ class SportmeBooker:
             c = 0
             while True:
                 if c % 100 == 0:
-                    print(f'Цикл {c} работаем...')
+                    logging.info(f'Цикл {c} работаем...')
 
                 self.morning_routine()
                 c += 1
                 if len(self.booked_events) >= 4:
-                    print("Дело сделано")
+                    logging.info("Дело сделано")
                     break
 
     def get_dates(self, num_days=10):
