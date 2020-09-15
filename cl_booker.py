@@ -4,8 +4,8 @@ from localconfig import logindata
 # login = logindata['inbox']['username']
 # password = logindata['inbox']['password']
 
-login = logindata['gmail']['username']
-password = logindata['gmail']['password']
+login = logindata['mail']['username']
+password = logindata['mail']['password']
 
 sp = SportmeBooker(login, password)
 

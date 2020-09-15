@@ -2,6 +2,7 @@ sportmetoken = "1376373965:AAGaApS37nIxrLaggoZ0VjOk15ynaJpaUyE"
 
 username = 'rs31@inbox.ru'
 password = 'ALEX12345'
+chatid = "224483345"
 
 logindata = {
     'inbox': {"username": "rs31@inbox.ru", "password": "ALEX12345"},

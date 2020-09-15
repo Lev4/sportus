@@ -2,14 +2,15 @@ import logging
 import random
 import time
 from datetime import datetime, timedelta
-import requests
 import urllib3
+import requests
+from localconfig import sportmetoken, chatid
 from tqdm.auto import tqdm
-
 
 urllib3.disable_warnings()
 requests.packages.urllib3.disable_warnings()
 logging.basicConfig(level = logging.INFO)
+
 
 class SportmeBooker:
     # TODO: научиться передавать забронированные, те что не нужно забронировать
@@ -32,7 +33,7 @@ class SportmeBooker:
             s = requests.Session()
             data = {"username": self.login, "password": self.password}
             url = "https://sportme.club/sport/auth/login"
-            r = s.post(url, data=data, verify=False)
+            r = s.post(url, data = data, verify = False)
             request_result = r.json()
             self.token = request_result['token']
 
@@ -53,9 +54,9 @@ class SportmeBooker:
     def get_events_info(self, mydate):
         """Получает список ивентов по определенной дате """
 
-        myurl = self.make_rq_url(mydate=mydate)
+        myurl = self.make_rq_url(mydate = mydate)
         myheaders = {"x-auth-token": self.token}
-        res = requests.get(myurl, headers=myheaders, verify=False)
+        res = requests.get(myurl, headers = myheaders, verify = False)
         return res.json()
 
     def get_all_events(self, only_ids=False):
@@ -99,7 +100,7 @@ class SportmeBooker:
         url = "https://sportme.club"
         url += f"/sport/events/places?ids={eventids}&rand={random.random()}"
         myheaders = {"x-auth-token": self.token}
-        res = requests.get(url, headers=myheaders, verify=False)
+        res = requests.get(url, headers = myheaders, verify = False)
         return res.json()
 
     def check_event_freedom(self, events_status_info):
@@ -151,7 +152,7 @@ class SportmeBooker:
 
         url = f'https://sportme.club/sport/events/{event_id}/check?rand={rand}'
         try:
-            res = requests.put(url, headers=myheaders, verify=False)
+            res = requests.put(url, headers = myheaders, verify = False)
             book_status = res.json()
             return book_status
         except Exception as e:
@@ -188,7 +189,7 @@ class SportmeBooker:
         result = None
         if checker.get('state') == 'OK' or checker.get('message') == 'FINISH_BOOKING':
             try:
-                res = requests.post(url, headers=myheaders, verify=False)
+                res = requests.post(url, headers = myheaders, verify = False)
                 result = res.json()
             except Exception as e:
                 logging.info(e)
@@ -237,7 +238,7 @@ class SportmeBooker:
             'x-requested-with': 'XMLHttpRequest',
         }
         try:
-            res = requests.post(url, headers=myheaders, verify=False)
+            res = requests.post(url, headers = myheaders, verify = False)
             result = res.json()
             if result['state'] == 'OK':
                 # print(f'Бронирование {event_id} отменено')
@@ -277,7 +278,7 @@ class SportmeBooker:
             'x-requested-with': 'XMLHttpRequest',
         }
         try:
-            res = requests.get(url, headers=myheaders, verify=False)
+            res = requests.get(url, headers = myheaders, verify = False)
             result = res.json()
             active_bookings = []
             for el in result['data']:
@@ -318,7 +319,7 @@ class SportmeBooker:
     def get_dates(self, num_days=10):
         """Содает список дата на num_days вперед """
 
-        datetimes = [datetime.today() + timedelta(days=i) for i in range(-1, num_days)]
+        datetimes = [datetime.today() + timedelta(days = i) for i in range(-1, num_days)]
         dates = [x.strftime('%Y-%m-%d') for x in datetimes]
         self.dates = dates
 
@@ -336,5 +337,17 @@ class SportmeBooker:
                     b_result = self.book_event(event_id)
                     if b_result:
                         self.booked_events.append(event_id)
+                        msg = f'Забронирован {event_id}'
+                        self.send_message(chatid, sportmetoken, msg)
+                        event_time = self.get_event_time(event_id)
+                        msg = f'Время {event_time}'
+                        self.send_message(chatid, sportmetoken, msg)
                     time.sleep(1)
         time.sleep(30)
+
+    @staticmethod
+    def send_message(chat_id, token, text='bla-bla-bla'):
+        url = f'https://api.telegram.org/bot{token}/sendMessage'
+        payload = {'chat_id': chat_id, 'text': text}
+        r = requests.post(url, json = payload)
+        return r
