@@ -1,11 +1,23 @@
-sportmetoken = "1376373965:AAGaApS37nIxrLaggoZ0VjOk15ynaJpaUyE"
+import os
+from dotenv import load_dotenv
 
-username = 'rs31@inbox.ru'
-password = 'ALEX12345'
-chatid = "224483345"
+load_dotenv()
+sportmetoken = str(os.getenv("BOT_TOKEN"))
+
+chatid = str(os.getenv("ADMIN_ID"))
 
 logindata = {
-    'inbox': {"username": "rs31@inbox.ru", "password": "ALEX12345"},
-    'gmail': {"username": "supermariolanza@gmail.com", "password": "Alex12345"},
-    'mail': {"username": "alev4enko@mail.ru", "password": "Alex12345"},
+    'inbox': {
+        "username": str(os.getenv("INBOXMAIL")),
+        "password": str(os.getenv("INBOXPWD"))
+    },
+    'gmail': {
+        "username": str(os.getenv("GMAIL")),
+        "password": str(os.getenv("GMAILPWD"))
+    },
+    'mail': {
+        "username": str(os.getenv("MAIL")),
+        "password": str(os.getenv("MAILPWD"))
+    },
 }
+
