@@ -17,11 +17,12 @@ class SportmeBooker:
     # поставить счетчик бронирования в цикл бронирования
     #
 
-    def __init__(self, login, password):
-        self.login = login
-        self.password = password
+    def __init__(self, logindata, account, booked_events=list()):
+        self.account = account
+        self.login = logindata[self.account]['username']
+        self.password = logindata[account]['password']
         self.token = None
-        self.booked_events = []
+        self.booked_events = booked_events
         self.all_events = []
         self.dates = None
         self.myaddress = '52'
@@ -340,6 +341,7 @@ class SportmeBooker:
                         self.send_message(chatid, sportmetoken,  f'Слот {event_id} забронирован')
                         event_time = self.get_event_time(event_id)
                         self.send_message(chatid, sportmetoken, f'Дата и время: {event_time}')
+                        self.send_message(chatid, sportmetoken, f'Учетка: {self.account}')
                     time.sleep(1)
         time.sleep(30)
 

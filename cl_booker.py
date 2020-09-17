@@ -1,19 +1,20 @@
 from sportme import SportmeBooker
-from localconfig import logindata
+from localconfig import logindata, sportmetoken, chatid
 
 
 def main():
-    login = logindata['mail']['username']
-    password = logindata['mail']['password']
-
-    sp = SportmeBooker(login, password)
+    sp = SportmeBooker(logindata, 'mail')
+    sp.send_message(chatid, sportmetoken, f'Начинаю работу под учеткой {sp.account}')
     sp.run('morning')
+    sp.send_message(chatid, sportmetoken, f'Забронированы следующие слоты {",".join(sp.booked_events)}')
+    sp.send_message(chatid, sportmetoken, f'Завершаю работу под учеткой {sp.account}')
+    booked_events = sp.booked_events
 
-    login = logindata['inbox']['username']
-    password = logindata['inbox']['password']
-
-    sp = SportmeBooker(login, password)
+    sp = SportmeBooker(logindata, 'inbox', booked_events)
+    sp.send_message(chatid, sportmetoken, f'Начинаю работу под учеткой {sp.account}')
     sp.run('morning')
+    sp.send_message(chatid, sportmetoken, f'Забронированы следующие слоты {",".join(sp.booked_events)}')
+    sp.send_message(chatid, sportmetoken, f'Завершаю работу под учеткой {sp.account}')
 
 
 if __name__ == '__main__':
