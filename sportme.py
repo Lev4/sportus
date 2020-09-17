@@ -104,7 +104,8 @@ class SportmeBooker:
         res = requests.get(url, headers = myheaders, verify = False)
         return res.json()
 
-    def check_event_freedom(self, events_status_info):
+    @staticmethod
+    def check_event_freedom(events_status_info):
         """ Проверяет наличие свободных слотов """
 
         freebookids = []

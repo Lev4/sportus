@@ -20,4 +20,3 @@ logindata = {
         "password": str(os.getenv("MAILPWD"))
     },
 }
-
