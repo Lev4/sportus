@@ -337,11 +337,9 @@ class SportmeBooker:
                     b_result = self.book_event(event_id)
                     if b_result:
                         self.booked_events.append(event_id)
-                        msg = f'Забронирован {event_id}'
-                        self.send_message(chatid, sportmetoken, msg)
+                        self.send_message(chatid, sportmetoken,  f'Слот {event_id} забронирован')
                         event_time = self.get_event_time(event_id)
-                        msg = f'Время {event_time}'
-                        self.send_message(chatid, sportmetoken, msg)
+                        self.send_message(chatid, sportmetoken, f'Дата и время: {event_time}')
                     time.sleep(1)
         time.sleep(30)
 
