@@ -9,7 +9,7 @@ from tqdm.auto import tqdm
 
 urllib3.disable_warnings()
 requests.packages.urllib3.disable_warnings()
-logging.basicConfig(level = logging.INFO)
+logging.basicConfig(filename = "sportme.log", level = logging.INFO)
 
 
 class SportmeBooker:

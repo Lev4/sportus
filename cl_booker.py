@@ -2,6 +2,9 @@ from sportme import SportmeBooker
 from localconfig import logindata, sportmetoken, chatid
 
 
+
+
+
 def main():
     sp = SportmeBooker(logindata, 'mail')
     sp.send_message(chatid, sportmetoken, f'Начинаю работу под учеткой {sp.account}')
