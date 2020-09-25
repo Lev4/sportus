@@ -6,7 +6,7 @@ from localconfig import logindata, sportmetoken, chatid
 
 
 def main():
-    sp = SportmeBooker(logindata, 'mail')
+    sp = SportmeBooker(logindata, 'gmail')
     sp.send_message(chatid, sportmetoken, f'Начинаю работу под учеткой {sp.account}')
     sp.run('morning')
     sp.send_message(chatid, sportmetoken, f'Забронированы следующие слоты {",".join(sp.booked_events)}')
