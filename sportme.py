@@ -109,9 +109,10 @@ class SportmeBooker:
         """ Проверяет наличие свободных слотов """
 
         freebookids = []
-        for el in events_status_info['data']:
-            if el['free'] > 0:
-                freebookids.append(el['bookId'])
+        if events_status_info.get('data'):
+            for el in events_status_info['data']:
+                if el['free'] > 0:
+                    freebookids.append(el['bookId'])
         if freebookids:
             return freebookids
         else:
