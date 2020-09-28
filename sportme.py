@@ -94,6 +94,15 @@ class SportmeBooker:
                 morning_events.append(el[0])
         return morning_events
 
+    def get_events_by_start_time(self, start_time='07:00:00'):
+        """Получает ивенты по заданном времени начала из списка всех ивентов"""
+
+        selected_events = []
+        for el in self.all_events:
+            if el[1].split(' ')[1] == start_time:
+                selected_events.append(el[0])
+        return selected_events
+
     def get_events_status(self, events):
         """Получает короткую инфо об ивентах"""
 
@@ -122,7 +131,16 @@ class SportmeBooker:
         """ Проверяет наличие свободных мест по утрам """
 
         self.get_all_events()
-        events = self.get_morning_events()
+        events = self.get_events_by_start_time()
+        event_info = self.get_events_status(events)
+        result = self.check_event_freedom(event_info)
+        return result
+
+    def check_events_by_start_time(self, start_time='07:00:00'):
+        """ Проверяет наличие свободных мест по утрам """
+
+        self.get_all_events()
+        events = self.get_events_by_start_time(start_time=start_time)
         event_info = self.get_events_status(events)
         result = self.check_event_freedom(event_info)
         return result
@@ -318,6 +336,17 @@ class SportmeBooker:
                 if len(self.booked_events) >= 4:
                     logging.info("Дело сделано")
                     break
+        elif routine_name == 'evening':
+            c = 0
+            while True:
+                if c % 100 == 0:
+                    logging.info(f'Цикл {c} работаем...')
+
+                self.routine_by_start_time(start_time = '17:00:00')
+                c += 1
+                if len(self.booked_events) >= 4:
+                    logging.info("Дело сделано")
+                    break
 
     def get_dates(self, num_days=10):
         """Содает список дата на num_days вперед """
@@ -346,6 +375,26 @@ class SportmeBooker:
                         self.send_message(chatid, sportmetoken, f'Учетка: {self.account}')
                     time.sleep(1)
         time.sleep(30)
+
+    def routine_by_start_time(self, start_time='07:00:00'):
+        """Процедура бронирования утренних слотов"""
+
+        self.get_dates()
+        self.get_active_bookings()
+        free_bookids = self.check_events_by_start_time(start_time=start_time)
+        if free_bookids:
+            for event_id in free_bookids:
+                if event_id not in self.booked_events:
+                    b_result = self.book_event(event_id)
+                    if b_result:
+                        self.booked_events.append(event_id)
+                        self.send_message(chatid, sportmetoken,  f'Слот {event_id} забронирован')
+                        event_time = self.get_event_time(event_id)
+                        self.send_message(chatid, sportmetoken, f'Дата и время: {event_time}')
+                        self.send_message(chatid, sportmetoken, f'Учетка: {self.account}')
+                    time.sleep(1)
+        time.sleep(30)
+
 
     @staticmethod
     def send_message(chat_id, token, text='bla-bla-bla'):
