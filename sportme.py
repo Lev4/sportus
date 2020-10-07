@@ -14,8 +14,6 @@ logging.basicConfig(filename = "sportme.log", level = logging.INFO)
 
 class SportmeBooker:
     # TODO: научиться передавать забронированные, те что не нужно забронировать
-    # поставить счетчик бронирования в цикл бронирования
-    #
 
     def __init__(self, logindata, account, booked_events=list()):
         self.account = account
